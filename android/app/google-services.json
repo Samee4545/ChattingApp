@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "802637922175",
+    "project_id": "chattingapp-19906",
+    "storage_bucket": "chattingapp-19906.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802637922175:android:50f8d5bcc4f5a8354d644a",
+        "android_client_info": {
+          "package_name": "com.bidbazaarChat.chatapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4_KfeBtk4bXwwWWsxLYuwHESaBAVzmI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
