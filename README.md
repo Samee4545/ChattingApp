@@ -1,6 +1,7 @@
 # chatapp
 
-A new Flutter project.
+    This repo consists of flutter chatapp with real-time firebase database in User can regitser with email, send or recieve messages, can find someone from his/her username. 
+    This chatapp also consist of feature of sending custom offer just like fiverr where you can send custom offer to client in chatroom.
 
 ## Getting Started
 
