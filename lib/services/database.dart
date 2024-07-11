@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:chatapp/models/chatModel.dart';
+import 'package:chatapp/services/sharedPrefrences.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -128,69 +130,61 @@ class DatabaseMethods {
     }
   }
 
-  Future<Stream<dynamic>> getChatRoomMessages(String chatRoomId) async {
-    try {
-      var result = _database
-          .child('ChatRoom')
-          .child(chatRoomId)
-          .child('chats')
-          .orderByChild('time')
-          .onValue;
+  Future<List<ChatModel>> getChatRoomMessages(String chatRoomId) async {
+    final DatabaseReference _ref = FirebaseDatabase.instance
+        .reference()
+        .child('ChatRoom')
+        .child(chatRoomId)
+        .child('chats');
+    List<ChatModel> products = [];
 
-      return result.map((event) => event.snapshot.value);
+    DataSnapshot snapshot = (await _ref.once()).snapshot;
+    Map<dynamic, dynamic>? values = snapshot.value as Map?;
+    if (values != null) {
+      values.forEach((key, value) {
+        products.add(ChatModel.fromMap(value));
+      });
+    }
+
+    return products;
+  }
+
+//   Future<QuerySnapshot> getTheUserbyUsername(String id) async {
+//     DatabaseReference _ref = FirebaseDatabase.instance
+//         .reference()
+//         .child('Users')
+//         .where('username', isEqualTo: id)
+//         .get();
+//   }
+// }
+  Future<dynamic> getTheUserInfo(String username) async {
+    try {
+      var result = await _database
+          .child('Users')
+          .child('username') // Ensure 'searchKey' field is correct
+          .equalTo(username.toUpperCase())
+          .once();
+      // print('Search Result: ${result.snapshot.value}');
+      return Future<dynamic>.value(result.snapshot.value);
     } catch (e) {
-      Utils().toastMessage('Error getting chat room messages: $e');
+      Utils().toastMessage('Error searching user: $e');
       throw e;
     }
   }
 
-  // Future<Stream<dynamic>> getChatRoomMessages(String chatRoomId) async {
-  //   try {
-  //     var result = _database
-  //         .child('ChatRoom')
-  //         .child(chatRoomId)
-  //         .child('chats')
-  //         .orderByChild('time')
-  //         .onValue;
-  //     print("results... ${(await result.first).snapshot.value}");
-  //     return Stream<dynamic>.value((await result.first).snapshot.value);
-  //   } catch (e) {
-  //     Utils().toastMessage('Error getting chat room messages: $e');
-  //     throw e;
-  //   }
-  // }
-
-  // Future<Stream<dynamic>?> getChatRoomMessages(String chatRoomId) async {
-  //   try {
-  //     var result = _database
-  //         .child('ChatRoom')
-  //         .child(chatRoomId)
-  //         .child('chats')
-  //         .orderByChild('time')
-  //         .onValue;
-  //     print("====================================");
-  //     print("results... ${(await result.first).snapshot.value}");
-  //     return Stream<dynamic>.value((await result.first).snapshot.value);
-  //   } catch (e) {
-  //     Utils().toastMessage('Error getting chat room messages: $e');
-  //     rethrow;
-  //   }
-  // }
-
-  // Stream<dynamic> getChatRoomMessages(String chatRoomId) {
-  //   try {
-  //     var result = _database
-  //         .child('ChatRoom')
-  //         .child(chatRoomId)
-  //         .child('chats')
-  //         .orderByChild('time')
-  //         .onValue;
-  //         print('Search Result: ${result.snapshot.value}');
-  //     return value(result.snapshot.value);
-
-  //   } catch (e) {
-  //     Utils().toastMessage('Error getting chat room messages: $e');
-  //     throw e;
-  //   }
-  // }
+  Future<Stream<dynamic>> getChatRooms() async {
+    String? myUsername = await sharedPrefrenceHelper().getUserName();
+    try {
+      var data = _database
+          .child('ChatRoom')
+          .orderByChild('time')
+          .orderByChild('users')
+          .equalTo(myUsername!.toUpperCase())
+          .onValue;
+      return data;
+    } catch (e) {
+      Utils().toastMessage('Error searching user: $e');
+      throw e;
+    }
+  }
 }

@@ -36,12 +36,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  getChatRoomIDbyUser(String a, String b) {
-    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-      return "$b\_$a";
-    } else {
-      return "$a\_$b";
-    }
+  String getChatRoomIDbyUser(String a, String b) {
+    // Convert usernames to uppercase
+    String userA = a.toUpperCase();
+    String userB = b.toUpperCase();
+
+    // Sort the uppercase usernames alphabetically
+    List<String> users = [userA, userB];
+    users.sort();
+
+    // Concatenate the sorted uppercase usernames to form the chat room ID
+    return "${users[0]}_${users[1]}";
   }
 
   var queryResultSet = [];
